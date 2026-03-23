@@ -11,6 +11,7 @@ import {
 import { AppService } from './app.service';
 import { UsersService } from './user.service';
 import { PostsService } from './post.service';
+import { CreatePostDto } from './create-post.dto';
 
 @Controller()
 export class AppController {
@@ -61,8 +62,8 @@ export class AppController {
   }
 
   @Post('post')
-  createPost(@Body() data) {
-    return this.postsService.create(data);
+  createPost(@Body() createPostDto: CreatePostDto) {
+    return this.postsService.create(createPostDto);
   }
 
   @Patch('post/:id')

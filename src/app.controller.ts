@@ -12,8 +12,11 @@ import {
 import { AppService } from './app.service';
 import { UsersService } from './user.service';
 import { PostsService } from './post.service';
-import { CreatePostDto } from './create-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
 import { LoggingInterceptor } from './logging.interceptor';
+import { User } from './generated/prisma/client';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller()
@@ -30,52 +33,57 @@ export class AppController {
   }
 
   @Get('users')
-  getUsers() {
-    return this.usersService.users();
+  async getUsers(): Promise<User[]> {
+    return this.usersService.findAll();
   }
 
-  @Get('user/:id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.user({ id });
+  @Get('users/:id')
+  async getUserById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<User | null> {
+    return this.usersService.findOne({ id });
   }
 
-  @Post('user')
-  createUser(@Body() data) {
+  @Post('users')
+  async createUser(@Body() data: CreateUserDto): Promise<User> {
     return this.usersService.create(data);
   }
 
-  @Patch('user/:id')
-  updateUser(@Param('id', ParseIntPipe) id, @Body() data) {
-    return this.usersService.update(data, id);
+  @Patch('users/:id')
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.update({ where: { id }, data });
   }
 
-  @Delete('user/:id')
-  deleteUser(@Param('id', ParseIntPipe) id) {
+  @Delete('users/:id')
+  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.usersService.delete(id);
   }
 
   @Get('posts')
-  getPosts() {
+  async getPosts() {
     return this.postsService.posts();
   }
 
-  @Get('post/:id')
-  getPostById(@Param('id', ParseIntPipe) id: number) {
+  @Get('posts/:id')
+  async getPostById(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.post({ id });
   }
 
-  @Post('post')
-  createPost(@Body() createPostDto: CreatePostDto) {
+  @Post('posts')
+  async createPost(@Body() createPostDto: CreatePostDto) {
     return this.postsService.create(createPostDto);
   }
 
-  @Patch('post/:id')
-  updatePost(@Param('id', ParseIntPipe) id, @Body() data) {
+  @Patch('posts/:id')
+  async updatePost(@Param('id', ParseIntPipe) id, @Body() data) {
     return this.postsService.update(data, id);
   }
 
-  @Delete('post/:id')
-  deletePost(@Param('id', ParseIntPipe) id) {
+  @Delete('posts/:id')
+  async deletePost(@Param('id', ParseIntPipe) id) {
     return this.postsService.delete(id);
   }
 }

@@ -7,12 +7,15 @@ import {
   Body,
   Patch,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersService } from './user.service';
 import { PostsService } from './post.service';
 import { CreatePostDto } from './create-post.dto';
+import { LoggingInterceptor } from './logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor)
 @Controller()
 export class AppController {
   constructor(

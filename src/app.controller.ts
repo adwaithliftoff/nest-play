@@ -14,9 +14,9 @@ import { UsersService } from './user.service';
 import { PostsService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { LoggingInterceptor } from './logging.interceptor';
-import { User } from './generated/prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller()
@@ -33,19 +33,19 @@ export class AppController {
   }
 
   @Get('users')
-  async getUsers(): Promise<User[]> {
+  async getUsers(): Promise<UserResponseDto[]> {
     return this.usersService.findAll();
   }
 
   @Get('users/:id')
   async getUserById(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<User | null> {
+  ): Promise<UserResponseDto | null> {
     return this.usersService.findOne({ id });
   }
 
   @Post('users')
-  async createUser(@Body() data: CreateUserDto): Promise<User> {
+  async createUser(@Body() data: CreateUserDto): Promise<UserResponseDto> {
     return this.usersService.create(data);
   }
 
@@ -53,12 +53,14 @@ export class AppController {
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateUserDto,
-  ): Promise<User> {
+  ): Promise<UserResponseDto> {
     return this.usersService.update({ where: { id }, data });
   }
 
   @Delete('users/:id')
-  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+  async deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UserResponseDto> {
     return this.usersService.delete(id);
   }
 

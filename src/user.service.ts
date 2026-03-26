@@ -39,7 +39,11 @@ export class UsersService {
     data: Prisma.UserUpdateInput;
   }): Promise<UserResponseDto> {
     const { where, data } = params;
-    const user = await this.prisma.user.update({ where, data });
+    const { id, email, ...safeData } = data as any;
+    const user = await this.prisma.user.update({
+      where,
+      data: { ...safeData, role: 'USER' },
+    });
     const { password, ...rest } = user;
     return rest;
   }

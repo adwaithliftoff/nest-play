@@ -22,6 +22,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { Roles } from './auth/roles.decorator';
 import { Role } from './generated/prisma/enums';
 import { AuthGuard } from './auth/auth.guard';
+import { OwnershipGuard } from './auth/ownership.guard';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller()
@@ -44,6 +45,7 @@ export class AppController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(AuthGuard, OwnershipGuard)
   @Get('users/:id')
   async getUserById(
     @Param('id', ParseIntPipe) id: number,
@@ -56,6 +58,7 @@ export class AppController {
     return this.usersService.create(data);
   }
 
+  @UseGuards(AuthGuard, OwnershipGuard)
   @Patch('users/:id')
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
@@ -64,6 +67,7 @@ export class AppController {
     return this.usersService.update({ where: { id }, data });
   }
 
+  @UseGuards(AuthGuard, OwnershipGuard)
   @Delete('users/:id')
   async deleteUser(
     @Param('id', ParseIntPipe) id: number,

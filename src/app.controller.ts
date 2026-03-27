@@ -8,6 +8,7 @@ import {
   Patch,
   Delete,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersService } from './user.service';
@@ -17,6 +18,10 @@ import { LoggingInterceptor } from './logging.interceptor';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { RolesGuard } from './auth/roles.guard';
+import { Roles } from './auth/roles.decorator';
+import { Role } from './generated/prisma/enums';
+import { AuthGuard } from './auth/auth.guard';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller()
@@ -32,6 +37,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Get('users')
   async getUsers(): Promise<UserResponseDto[]> {
     return this.usersService.findAll();
